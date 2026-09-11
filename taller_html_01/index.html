@@ -1,0 +1,80 @@
+<!DOCTYPE html> 
+<html lang="es"> 
+<head>    
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>Mi Primer Sitio Web</title> 
+</head> 
+<body>  
+
+    <header>        
+        <h1>Desarrollo Web Base</h1>        
+        <p>Taller introductorio a la estructura HTML5</p>    
+    </header> 
+
+    <main>
+        <section>
+            <h2>Sobre el Curso</h2>
+            <p>HTML es el lenguaje de marcado estándar para crear páginas web. Describe la <strong>estructura</strong> de una página mediante elementos.</p>
+        </section>
+
+        <section>
+            <h2>Tecnologías Web Fundamentales</h2>
+            <ul>
+                <li><strong>HTML:</strong> Estructura y contenido.</li>
+                <li><strong>CSS:</strong> Presentación y estilo.</li>
+                <li><strong>JavaScript:</strong> Comportamiento e interactividad.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Recurso Visual</h2>
+            <img src="https://via.placeholder.com/400x200" alt="Imagen de ejemplo para el taller">
+        </section>
+    </main>
+
+    <nav>
+        <ul>
+            <li><a href="#contacto">Ir a Contacto</a></li>
+            <li><a href="https://developer.mozilla.org/es/docs/Web/HTML" target="_blank">Documentación MDN</a></li>
+        </ul>
+    </nav>
+
+    <section id="contacto">
+        <h2>Formulario de Registro</h2>
+        <form action="#" method="POST">
+            <div>
+                <label for="nombre">Nombre completo:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+            <br>
+            <div>
+                <label for="correo">Correo electrónico:</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+            <br>
+            <div>
+                <label for="rol">Perfil del estudiante:</label>
+                <select id="rol" name="rol">
+                    <option value="frontend">Frontend</option>
+                    <option value="backend">Backend</option>
+                    <option value="fullstack">Full Stack</option>
+                </select>
+            </div>
+            <br>
+            <div>
+                <label for="mensaje">Comentarios:</label>
+                <br>
+                <textarea id="mensaje" name="mensaje" rows="4" cols="40"></textarea>
+            </div>
+            <br>
+            <button type="submit">Enviar Registro</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Taller de Aplicaciones Web. Todos los derechos reservados.</p>
+    </footer>
+
+</body> 
+</html>
