@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Clientes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            padding: 35px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 2px solid #eef2f5;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 5px rgba(42, 82, 152, 0.3);
+        }
+
+        input.error {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        button {
+            width: 100%;
+            background-color: #1e3c72;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #2a5298;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Ingreso de Clientes</h2>
+        
+        <div id="successMessage" class="success-message">
+            ¡Cliente registrado correctamente!
+        </div>
+
+        <form id="clientForm" novalidate>
+            
+            <div class="form-group">
+                <label for="cedula">Cédula (10 dígitos):</label>
+                <input type="text" id="cedula" name="cedula" maxlength="10" placeholder="Ej: 1314745769">
+                <span class="error-message" id="errorCedula">Debe ingresar exactamente 10 dígitos numéricos.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="nombre">Nombre Completo (máx. 30 caracteres):</label>
+                <input type="text" id="nombre" name="nombre" maxlength="30" placeholder="Ej: Juan Carlos Pérez">
+                <span class="error-message" id="errorNombre">Ingrese un nombre válido (solo letras, máx. 30 caracteres).</span>
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Dirección (máx. 50 caracteres):</label>
+                <input type="text" id="direccion" name="direccion" maxlength="50" placeholder="Ej: Av. Principal y Calle Secundaria #123">
+                <span class="error-message" id="errorDireccion">La dirección es obligatoria (máx. 50 caracteres).</span>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono Celular (10 dígitos):</label>
+                <input type="text" id="telefono" name="telefono" maxlength="10" placeholder="Ej: 0991234567">
+                <span class="error-message" id="errorTelefono">Debe empezar por 09 y contener 10 dígitos.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo Electrónico:</label>
+                <input type="email" id="correo" name="correo" placeholder="ejemplo@dominio.com">
+                <span class="error-message" id="errorCorreo">Ingrese un correo electrónico válido.</span>
+            </div>
+
+            <button type="submit">Guardar Cliente</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("clientForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let isValid = true;
+
+            document.getElementById("successMessage").style.display = "none";
+
+            const cedula = document.getElementById("cedula").value.trim();
+            const nombre = document.getElementById("nombre").value.trim();
+            const direccion = document.getElementById("direccion").value.trim();
+            const telefono = document.getElementById("telefono").value.trim();
+            const correo = document.getElementById("correo").value.trim();
+
+            const regexCedula = /^[0-9]{10}$/;
+            if (!regexCedula.test(cedula)) {
+                showError("cedula", "errorCedula");
+                isValid = false;
+            } else {
+                hideError("cedula", "errorCedula");
+            }
+
+            const regexNombre = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,30}$/;
+            if (!regexNombre.test(nombre)) {
+                showError("nombre", "errorNombre");
+                isValid = false;
+            } else {
+                hideError("nombre", "errorNombre");
+            }
+
+            if (direccion === "" || direccion.length > 50) {
+                showError("direccion", "errorDireccion");
+                isValid = false;
+            } else {
+                hideError("direccion", "errorDireccion");
+            }
+
+            const regexTelefono = /^09[0-9]{8}$/;
+            if (!regexTelefono.test(telefono)) {
+                showError("telefono", "errorTelefono");
+                isValid = false;
+            } else {
+                hideError("telefono", "errorTelefono");
+            }
+
+            const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regexCorreo.test(correo)) {
+                showError("correo", "errorCorreo");
+                isValid = false;
+            } else {
+                hideError("correo", "errorCorreo");
+            }
+
+            if (isValid) {
+                document.getElementById("successMessage").style.display = "block";
+                document.getElementById("clientForm").reset();
+            }
+        });
+
+        function showError(inputId, errorId) {
+            document.getElementById(inputId).classList.add("error");
+            document.getElementById(errorId).classList.add("active");
+        }
+
+        function hideError(inputId, errorId) {
+            document.getElementById(inputId).classList.remove("error");
+            document.getElementById(errorId).classList.remove("active");
+        }
+    </script>
+</body>
+</html>
