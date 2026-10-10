@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Envío Dinámico de Formulario</title>
+    <script>
+        function enviar(formulario) {
+            if (formulario.alta.checked == true) {
+                formulario.action = "paginas/alta.html";
+            }
+            if (formulario.alta.checked == false) {
+                formulario.action = "paginas/baja.html";
+            }
+            formulario.submit();
+        }
+    </script>
+</head>
+<body>
+    <form name="formulario" method="post" action="">
+        <label>
+            <input type="checkbox" name="alta" checked> Marcar para dar de Alta (Desmarcar para Baja)
+        </label>
+        <br><br>
+        <input type="button" value="Enviar Formulario" onclick="enviar(this.form)">
+    </form>
+</body>
+</html>

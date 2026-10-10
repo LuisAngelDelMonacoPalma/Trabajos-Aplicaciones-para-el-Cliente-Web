@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ventana Nueva</title>
+</head>
+<body>
+    <script>
+        var texto = prompt("Ingresa un título para la nueva ventana:");
+        var ventanaNueva = window.open("", "_blank");
+        if (ventanaNueva) {
+            ventanaNueva.document.write("<h1>" + texto + "</h1>");
+        } else {
+            alert("El navegador bloqueó la ventana emergente.");
+        }
+    </script>
+</body>
+</html>

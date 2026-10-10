@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Validación de Correo Electrónico</title>
+    <script>
+        function validaEmail() {
+            var valor = document.getElementById("campo").value;
+            var regex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w+)+$/;
+            if (!regex.test(valor)) {
+                alert("El formato del correo electrónico no es válido.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="return validaEmail()">
+        <label for="campo">Correo electrónico:</label>
+        <input type="text" id="campo" name="campo">
+        <input type="submit" value="Validar Email">
+    </form>
+</body>
+</html>

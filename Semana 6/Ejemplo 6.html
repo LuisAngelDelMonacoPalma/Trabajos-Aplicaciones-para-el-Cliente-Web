@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejemplo Función IVA</title>
+    <script>
+        function aplicar_IVA(valorProducto, IVA) {
+            var productoConIVA = valorProducto * IVA;
+            alert("El precio del producto, aplicando el IVA del " + IVA + " es: " + productoConIVA);
+        }
+    </script>
+</head>
+<body>
+    <h1>Cálculo de IVA</h1>
+    <p>Haz clic en el botón para probar la función con un producto de $100 y un IVA de 1.15:</p>
+    <button onclick="aplicar_IVA(100, 1.15)">Calcular IVA</button>
+</body>
+</html>

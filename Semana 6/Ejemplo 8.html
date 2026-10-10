@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabla desde Matriz</title>
+</head>
+<body>
+    <h1>Palabras más buscadas por Estado</h1>
+    <script>
+        // Declaración de matriz de ejemplo para que funcione el script
+        var palabras_mas_buscadas = [
+            ["Tecnología", "Programación", "JavaScript"],
+            ["Educación", "Universidad", "Estudiantes"],
+            ["Ciencia", "Investigación", "Datos"]
+        ];
+
+        document.write("<table border='1' cellpadding='5' cellspacing='0'>");
+        for (var i = 0; i < palabras_mas_buscadas.length; i++) {
+            document.write("<tr>");
+            document.write("<td><b>Estado " + i + "</b></td>");
+            for (var j = 0; j < palabras_mas_buscadas[i].length; j++) {
+                document.write("<td>" + palabras_mas_buscadas[i][j] + "</td>");
+            }
+            document.write("</tr>");
+        }
+        document.write("</table>");
+    </script>
+</body>
+</html>

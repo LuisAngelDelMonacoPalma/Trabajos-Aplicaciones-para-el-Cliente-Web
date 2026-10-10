@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Validación de Fecha</title>
+    <script>
+        function validaFecha() {
+            var dia = document.getElementById("dia").value;
+            var mes = document.getElementById("mes").value - 1; // Los meses en JS empiezan en 0
+            var ano = document.getElementById("ano").value;
+            var fecha = new Date(ano, mes, dia);
+            
+            // Comprobación de validez en la fecha introducida
+            if (isNaN(fecha)) {
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="return validaFecha()">
+        Día: <input type="text" id="dia" size="2">
+        Mes: <input type="text" id="mes" size="2">
+        Año: <input type="text" id="ano" size="4">
+        <input type="submit" value="Validar Fecha">
+    </form>
+</body>
+</html>

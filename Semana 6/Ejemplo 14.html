@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Validación de Casilla de Verificación</title>
+    <script>
+        function validaCheck() {
+            var elemento = document.getElementById("campoCondiciones");
+            if (!elemento.checked) {
+                alert("Debes aceptar las condiciones.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="return validaCheck()">
+        <label>
+            <input type="checkbox" id="campoCondiciones" name="condiciones"> Acepto los términos y condiciones
+        </label>
+        <br><br>
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+</html>

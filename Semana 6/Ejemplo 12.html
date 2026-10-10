@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Validación Numérica</title>
+    <script>
+        function validaNum() {
+            var valor = document.getElementById("telefono").value;
+            if (isNaN(valor)) {
+                alert("El campo tiene que ser numérico");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="return validaNum()">
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono">
+        <input type="submit" value="Validar">
+    </form>
+</body>
+</html>

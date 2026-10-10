@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Registro</title>
+</head>
+<body>
+    <form action="pagina.php" method="post" enctype="multipart/form-data">
+        <br>
+        Nombre: <input type="text" name="nombre" value="" size="42" maxlength="30"><br><br>
+        Apellidos: <input type="text" name="apellidos" value="" size="40" maxlength="80"><br><br>
+        DNI: <input type="text" name="dni" value="" size="10" maxlength="9"><br><br>
+        
+        Sexo: <br>
+        <input type="radio" name="sexo" value="hombre" checked> Hombre <br>
+        <input type="radio" name="sexo" value="mujer"> Mujer <br><br>
+        
+        Incluir mi foto: <input type="file" name="foto"><br><br>
+        
+        <input name="publicidad" type="checkbox" value="publicidad" checked> Enviar publicidad <br><br>
+        
+        <input type="submit" name="enviar" value="Guardar cambios">
+        <input type="reset" name="limpiar" value="Borrar los datos introducidos">
+    </form>
+</body>
+</html>
