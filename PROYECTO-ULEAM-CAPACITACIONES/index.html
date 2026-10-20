@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULEAM - Plataforma de Capacitaciones en Línea</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP HEADER / NAVBAR (Shown when authenticated) -->
+    <header id="main-header" class="bg-white border-b-2 border-uleam-red shadow-sm sticky top-0 z-30 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateToDashboard()">
+                <!-- SVG ULEAM Logo Badge -->
+                <div class="w-10 h-10 rounded-full border-2 border-uleam-red flex items-center justify-center bg-gray-50 overflow-hidden">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 text-gray-700 fill-current">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="4"/>
+                        <circle cx="50" cy="38" r="18"/>
+                        <path d="M 20,82 C 20,62 32,54 50,54 C 68,54 80,62 80,82 Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-uleam-red leading-tight">Uleam</h1>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Capacitaciones</p>
+                </div>
+            </div>
+
+            <!-- Role Selector Quick Switcher (Demo Feature) -->
+            <div class="hidden md:flex items-center space-x-2 bg-gray-100 p-1.5 rounded-lg border border-gray-200">
+                <span class="text-xs font-semibold text-gray-500 px-1">Simular Rol:</span>
+                <button onclick="switchRole('estudiante')" id="role-btn-estudiante" class="px-2.5 py-1 text-xs font-medium rounded transition">Estudiante</button>
+                <button onclick="switchRole('instructor')" id="role-btn-instructor" class="px-2.5 py-1 text-xs font-medium rounded transition">Instructor</button>
+                <button onclick="switchRole('admin')" id="role-btn-admin" class="px-2.5 py-1 text-xs font-medium rounded transition">Administrador</button>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-4">
+                <nav id="nav-links" class="flex items-center space-x-3 text-sm font-medium">
+                    <!-- Dynamic per role -->
+                </nav>
+
+                <!-- Notifications Button -->
+                <button onclick="toggleNotifications()" class="relative p-2 text-gray-600 hover:text-uleam-red transition rounded-full hover:bg-gray-100">
+                    <i class="fa-regular fa-bell text-lg"></i>
+                    <span id="notif-badge" class="absolute top-1 right-1 w-2.5 h-2.5 bg-uleam-red rounded-full hidden"></span>
+                </button>
+
+                <!-- User Profile Trigger -->
+                <button onclick="openProfileModal()" class="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 border border-gray-200">
+                    <img id="nav-avatar" src="https://placehold.co/100x100/C62828/ffffff?text=U" class="w-8 h-8 rounded-full object-cover" alt="User">
+                    <span id="nav-username" class="text-xs font-bold text-gray-700 hidden sm:inline-block pr-2">Usuario</span>
+                </button>
+
+                <!-- Logout Button -->
+                <button onclick="confirmLogout()" class="text-xs text-uleam-red hover:underline font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Cerrar sesión</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER FOR VIEWS -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- ==================== VIEW 1: AUTHENTICATION ==================== -->
+        <section id="view-auth" class="min-h-[80vh] flex flex-col justify-center items-center">
+            <!-- Login Box -->
+            <div id="auth-login-card" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 w-full max-w-md">
+                <div class="text-center mb-6">
+                    <div class="mx-auto w-16 h-16 rounded-full border-2 border-uleam-red flex items-center justify-center bg-gray-50 mb-3">
+                        <svg viewBox="0 0 100 100" class="w-12 h-12 text-uleam-red fill-current">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="4"/>
+                            <circle cx="50" cy="38" r="18"/>
+                            <path d="M 20,82 C 20,62 32,54 50,54 C 68,54 80,62 80,82 Z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-uleam-red uppercase tracking-wide">ULEAM Capacitaciones</h2>
+                    <p class="text-xs text-gray-500 mt-1">Ingresa tus credenciales institucionales</p>
+                </div>
+
+                <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Correo institucional</label>
+                        <input type="email" id="login-email" required placeholder="ejemplo@uleam.edu.ec" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-uleam-red focus:border-transparent text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" required placeholder="••••••••" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-uleam-red focus:border-transparent text-sm">
+                            <button type="button" onclick="togglePasswordVisibility('login-password')" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-uleam-red hover:bg-uleam-redHover text-white font-bold py-2.5 rounded-md shadow transition duration-150 text-sm">
+                        Ingresar
+                    </button>
+                    <div class="text-center mt-3">
+                        <button type="button" onclick="showAuthStep('recovery-1')" class="text-xs text-uleam-red hover:underline font-medium">
+                            ¿Olvidaste tu contraseña?
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Quick Presets for University Evaluation Demo -->
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <p class="text-[11px] text-gray-400 font-semibold mb-2 text-center uppercase tracking-wider">Acceso Rápido de Prueba (Demo)</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="loginPreset('estudiante')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2 rounded font-medium border text-center">Estudiante</button>
+                        <button onclick="loginPreset('instructor')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2 rounded font-medium border text-center">Instructor</button>
+                        <button onclick="loginPreset('admin')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2 rounded font-medium border text-center">Admin</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Recovery Step 1: Send/Verify Code -->
+            <div id="auth-recovery-1" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 w-full max-w-md hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-uleam-red">Recuperar contraseña</h2>
+                    <p class="text-xs text-gray-600 mt-2 px-2">
+                        Le hemos enviado un código de recuperación a su correo institucional, si no le llegó, haga clic en reenviar.
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <button onclick="resendCode()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 rounded text-xs transition">
+                        <i class="fa-solid fa-arrows-rotate mr-1"></i> Reenviar código
+                    </button>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Código de recuperación</label>
+                        <input type="text" id="recovery-code-input" placeholder="Ej: 123456" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-uleam-red text-center text-lg font-mono tracking-widest">
+                    </div>
+                    <button onclick="validateRecoveryCode()" class="w-full bg-uleam-red hover:bg-uleam-redHover text-white font-bold py-2.5 rounded-md text-sm transition">
+                        Validar
+                    </button>
+                    <div class="text-center">
+                        <button onclick="showAuthStep('login')" class="text-xs text-uleam-red hover:underline">
+                            Volver a inicio de sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Recovery Step 2: New Password -->
+            <div id="auth-recovery-2" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 w-full max-w-md hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-uleam-red">Recuperar contraseña</h2>
+                    <p class="text-xs text-gray-500 mt-1">Establezca su nueva clave de acceso</p>
+                </div>
+                <form onsubmit="handleResetPassword(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Nueva contraseña</label>
+                        <div class="relative">
+                            <input type="password" id="new-pass" required placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <button type="button" onclick="togglePasswordVisibility('new-pass')" class="absolute right-3 top-2.5 text-gray-400">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Confirmar contraseña</label>
+                        <div class="relative">
+                            <input type="password" id="confirm-pass" required placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <button type="button" onclick="togglePasswordVisibility('confirm-pass')" class="absolute right-3 top-2.5 text-gray-400">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-uleam-red hover:bg-uleam-redHover text-white font-bold py-2.5 rounded-md text-sm transition">
+                        Cambiar contraseña
+                    </button>
+                    <div class="text-center">
+                        <button type="button" onclick="showAuthStep('login')" class="text-xs text-uleam-red hover:underline">
+                            Volver a inicio de sesión
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 2: STUDENT DASHBOARD ==================== -->
+        <section id="view-student" class="space-y-6 hidden">
+            <!-- Tab Header: Mis Cursos vs Catalogo -->
+            <div id="student-main-tabs" class="border-b border-gray-300 flex space-x-6 pb-2">
+                <button onclick="switchStudentTab('mis-cursos')" id="tab-btn-mis-cursos" class="font-bold text-lg text-uleam-red border-b-2 border-uleam-red pb-1">Mis cursos</button>
+                <button onclick="switchStudentTab('catalogo')" id="tab-btn-catalogo" class="font-bold text-lg text-gray-500 hover:text-gray-800 pb-1">Catálogo de Cursos</button>
+            </div>
+
+            <!-- Subtab: Mis Cursos (En curso / Completados) -->
+            <div id="student-section-mis-cursos" class="space-y-4">
+                <div class="flex space-x-3 bg-gray-200 p-1 rounded-lg w-fit text-sm">
+                    <button onclick="switchEnrolledSubtab('en-curso')" id="subtab-en-curso" class="px-4 py-1.5 rounded-md font-semibold bg-white text-gray-800 shadow-sm">En curso</button>
+                    <button onclick="switchEnrolledSubtab('completados')" id="subtab-completados" class="px-4 py-1.5 rounded-md font-semibold text-gray-600 hover:text-gray-900">Completados</button>
+                </div>
+
+                <!-- Course Cards List -->
+                <div id="student-courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Subtab: Catálogo -->
+            <div id="student-section-catalogo" class="space-y-4 hidden">
+                <div class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl border shadow-sm">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="catalog-search" oninput="renderStudentCatalog()" placeholder="Buscar curso..." 
+                            class="w-full pl-9 pr-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uleam-red">
+                    </div>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        <label class="text-xs font-bold text-gray-600 uppercase">Categoría:</label>
+                        <select id="catalog-category-filter" onchange="renderStudentCatalog()" class="border rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-uleam-red">
+                            <option value="ALL">Todas las categorías</option>
+                            <option value="Programación">Programación</option>
+                            <option value="Redes">Redes y Telecomunicaciones</option>
+                            <option value="Diseño">Diseño y Arquitectura</option>
+                            <option value="General">Capacitación General</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="catalog-courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 3: INSTRUCTOR DASHBOARD ==================== -->
+        <section id="view-instructor" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 gap-4">
+                <h2 class="text-2xl font-bold text-gray-800">Panel del Instructor</h2>
+                <button onclick="openCourseEditor()" class="bg-uleam-red hover:bg-uleam-redHover text-white px-4 py-2 rounded-lg text-sm font-bold shadow flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Crear nuevo curso
+                </button>
+            </div>
+
+            <!-- Instructor Tabs (Creados / Borradores) -->
+            <div class="flex space-x-4 border-b border-gray-200">
+                <button onclick="switchInstructorTab('creados')" id="inst-tab-creados" class="pb-2 font-bold text-uleam-red border-b-2 border-uleam-red">Cursos Creados / Publicados</button>
+                <button onclick="switchInstructorTab('borradores')" id="inst-tab-borradores" class="pb-2 font-bold text-gray-500 hover:text-gray-700">Borradores</button>
+            </div>
+
+            <!-- List of Instructor Courses -->
+            <div id="instructor-courses-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Rendered dynamically -->
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 4: ADMIN DASHBOARD ==================== -->
+        <section id="view-admin" class="space-y-8 hidden">
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Usuarios Activos</p>
+                    <p id="stat-active-users" class="text-3xl font-extrabold text-uleam-red mt-1">1,248</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Cursos Publicados</p>
+                    <p id="stat-published-courses" class="text-3xl font-extrabold text-uleam-red mt-1">37</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Certificados Emitidos</p>
+                    <p id="stat-certificates-issued" class="text-3xl font-extrabold text-uleam-red mt-1">572</p>
+                </div>
+            </div>
+
+            <!-- Section: Platform Courses Approval & Management -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h3 class="text-lg font-bold text-gray-800">Cursos en la plataforma</h3>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        <input type="text" id="admin-course-search" oninput="renderAdminCourses()" placeholder="Buscar curso..." class="px-3 py-1.5 border rounded-lg text-sm w-full sm:w-64">
+                        <select id="admin-course-filter" onchange="renderAdminCourses()" class="px-3 py-1.5 border rounded-lg text-sm bg-white">
+                            <option value="ALL">Todos los estados</option>
+                            <option value="PUBLICADO">Publicados</option>
+                            <option value="PENDIENTE">Pendientes de Aprobación</option>
+                            <option value="DESHABILITADO">Deshabilitados</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="admin-courses-list" class="space-y-3">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+
+            <!-- Section: Platform Users Management -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-800">Usuarios</h3>
+                    <input type="text" id="admin-user-search" oninput="renderAdminUsers()" placeholder="Buscar usuario..." class="px-3 py-1.5 border rounded-lg text-sm w-64">
+                </div>
+
+                <div id="admin-users-list" class="divide-y divide-gray-100">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+
+            <!-- Section: Admin Drafts / Create Course -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-lg font-bold text-gray-800">Mis cursos (Administrador)</h3>
+                    <button onclick="openCourseEditor(null, true)" class="bg-uleam-red hover:bg-uleam-redHover text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">
+                        <i class="fa-solid fa-plus"></i> Crear nuevo curso
+                    </button>
+                </div>
+                <div id="admin-my-courses-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 5: VIRTUAL CLASSROOM (AULA VIRTUAL) ==================== -->
+        <section id="view-classroom" class="space-y-6 hidden">
+            <!-- Breadcrumb Navigation -->
+            <div class="flex items-center space-x-2 text-xs font-semibold text-gray-500">
+                <button onclick="navigateToDashboard()" class="hover:text-uleam-red">Inicio</button>
+                <span>/</span>
+                <span id="classroom-breadcrumb-course" class="text-gray-800">Curso</span>
+            </div>
+
+            <!-- Course Header Card -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-1/3 bg-gray-100 rounded-lg overflow-hidden border relative h-48 flex items-center justify-center">
+                    <img id="classroom-banner" src="" class="w-full h-full object-cover" alt="Banner" onerror="this.src='https://placehold.co/600x400/C62828/ffffff?text=ULEAM+Capacitación'">
+                </div>
+                <div class="flex-1 space-y-3">
+                    <div class="flex justify-between items-start">
+                        <h2 id="classroom-title" class="text-2xl font-bold text-uleam-red">Título del curso</h2>
+                        <div id="classroom-actions" class="flex gap-2">
+                            <!-- Dynamic: View Participants, Edit, etc. -->
+                        </div>
+                    </div>
+                    <p id="classroom-desc" class="text-sm text-gray-600">Descripción detallada del curso...</p>
+                    <div class="flex flex-wrap gap-4 text-xs font-medium text-gray-500 pt-2 border-t">
+                        <div><strong class="text-gray-700">Categoría:</strong> <span id="classroom-category">Programación</span></div>
+                        <div><strong class="text-gray-700">Docente:</strong> <span id="classroom-instructor">Luis Del Mónaco</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modules Accordion & Content Viewer Grid -->
+            <div id="classroom-main-content" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left/Main Column: Active Content Viewer -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div id="lesson-player-container" class="bg-black rounded-xl overflow-hidden shadow border border-gray-800 h-80 sm:h-96 flex flex-col justify-center items-center relative">
+                        <!-- Video or Slide Placeholder -->
+                        <div id="player-content-area" class="text-center p-6 text-white w-full">
+                            <i class="fa-solid fa-circle-play text-6xl text-uleam-red mb-4 animate-pulse"></i>
+                            <h3 id="player-title" class="text-lg font-bold">Selecciona una lección</h3>
+                            <p id="player-subtitle" class="text-xs text-gray-400 mt-1">El contenido en video se mostrará en esta área</p>
+                        </div>
+                    </div>
+
+                    <!-- Lesson Actions / Status -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
+                        <span id="player-lesson-name" class="font-bold text-sm text-gray-800">Lección activa</span>
+                        <button id="btn-mark-completed" onclick="markCurrentLessonComplete()" class="bg-uleam-green hover:bg-uleam-greenHover text-white px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2">
+                            <i class="fa-solid fa-check"></i> Marcar como completada
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Modules and Lessons Navigation List -->
+                <div class="space-y-4">
+                    <h3 class="text-md font-bold text-gray-800 flex items-center justify-between">
+                        <span>Contenido del curso</span>
+                        <span id="classroom-completion-badge" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded border">0%</span>
+                    </h3>
+
+                    <div id="classroom-modules-accordion" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                        <!-- Modules populated dynamically -->
+                    </div>
+
+                    <!-- Certificate Box if finished -->
+                    <div id="classroom-certificate-box" class="bg-green-50 border border-green-200 p-4 rounded-xl text-center space-y-2 hidden">
+                        <i class="fa-solid fa-award text-3xl text-green-600"></i>
+                        <h4 class="font-bold text-sm text-green-900">¡Felicitaciones! Has completado este curso.</h4>
+                        <button onclick="downloadCertificate()" class="bg-uleam-red hover:bg-uleam-redHover text-white font-bold px-4 py-2 rounded-lg text-xs w-full shadow transition">
+                            <i class="fa-solid fa-file-pdf mr-1"></i> Descargar certificado
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== VIEW 6: COURSE EDITOR (INSTRUCTOR / ADMIN) ==================== -->
+        <section id="view-editor" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-6">
+                <div class="flex justify-between items-center border-b pb-4">
+                    <h2 class="text-xl font-bold text-uleam-red flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Crear / Editar curso</span>
+                    </h2>
+                    <div class="flex gap-2">
+                        <button onclick="saveCourseDraft()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded text-xs font-bold">
+                            Guardar Borrador
+                        </button>
+                        <button id="btn-editor-publish" onclick="submitCourseForPublish()" class="bg-uleam-red hover:bg-uleam-redHover text-white px-3 py-1.5 rounded text-xs font-bold shadow">
+                            Publicar / Solicitar Aprobación
+                        </button>
+                        <button id="btn-editor-disable" onclick="requestDisableCourse()" class="bg-red-800 hover:bg-red-900 text-white px-3 py-1.5 rounded text-xs font-bold hidden">
+                            Deshabilitar
+                        </button>
+                    </div>
+                </div>
+
+                <form id="course-editor-form" class="space-y-4">
+                    <input type="hidden" id="edit-course-id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Título del curso</label>
+                            <input type="text" id="edit-course-title" required class="w-full px-3 py-2 border rounded-md text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Categoría</label>
+                            <select id="edit-course-category" class="w-full px-3 py-2 border rounded-md text-sm bg-white">
+                                <option value="Programación">Programación</option>
+                                <option value="Redes">Redes y Telecomunicaciones</option>
+                                <option value="Diseño">Diseño y Arquitectura</option>
+                                <option value="General">Capacitación General</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="admin-instructor-assignment-field" class="hidden">
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Instructor Asignado</label>
+                        <select id="edit-course-instructor" class="w-full px-3 py-2 border rounded-md text-sm bg-white">
+                            <!-- Populated with instructors -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Descripción</label>
+                        <textarea id="edit-course-description" rows="3" class="w-full px-3 py-2 border rounded-md text-sm" placeholder="Descripción amplia del programa de capacitación..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Portada del curso (Imagen)</label>
+                        <select id="edit-course-cover" class="w-full px-3 py-2 border rounded-md text-sm bg-white">
+                            <option value="https://placehold.co/600x400/C62828/ffffff?text=Programación">Portada Roja (Programación)</option>
+                            <option value="https://placehold.co/600x400/424242/ffffff?text=Redes+y+Sistemas">Portada Gris (Redes)</option>
+                            <option value="https://placehold.co/600x400/7CB342/ffffff?text=Diseño+Web">Portada Verde (Diseño)</option>
+                        </select>
+                    </div>
+                </form>
+
+                <!-- Modules Building Section -->
+                <div class="border-t pt-4 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-md font-bold text-gray-800">Módulos del Curso</h3>
+                        <button onclick="addNewModuleToEditor()" class="bg-uleam-red hover:bg-uleam-redHover text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> Agregar módulo
+                        </button>
+                    </div>
+
+                    <div id="editor-modules-container" class="space-y-4">
+                        <!-- Module blocks rendered here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500 mt-auto">
+        <p>© 2026 Universidad Laica Eloy Alfaro de Manabí (ULEAM) - Todos los derechos reservados.</p>
+    </footer>
+
+
+    <!-- ==================== MODALS & OVERLAYS ==================== -->
+
+    <!-- Modal: Notifications Drawer -->
+    <div id="modal-notifications" class="fixed inset-0 modal-backdrop z-50 flex justify-end hidden">
+        <div class="bg-white w-full max-w-sm h-full shadow-2xl p-6 flex flex-col justify-between animate-slide-left">
+            <div>
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <h3 class="font-bold text-lg text-uleam-red flex items-center gap-2">
+                        <i class="fa-regular fa-bell"></i> Notificaciones
+                    </h3>
+                    <button onclick="toggleNotifications()" class="text-gray-400 hover:text-gray-600 text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="notifications-list" class="space-y-2 overflow-y-auto max-h-[75vh]">
+                    <!-- Notifications items -->
+                </div>
+            </div>
+            <button onclick="clearNotifications()" class="w-full text-center text-xs text-gray-500 hover:underline pt-4 border-t">
+                Limpiar notificaciones
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: User Profile Editor -->
+    <div id="modal-profile" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200">
+            <div class="bg-uleam-red text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear"></i> Perfil de Usuario / Editor
+                </h3>
+                <button onclick="closeProfileModal()" class="text-white hover:text-gray-200 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveProfile(event)" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto text-sm">
+                <div class="flex items-center space-x-4">
+                    <img id="profile-edit-avatar" src="https://placehold.co/100x100/C62828/ffffff?text=U" class="w-16 h-16 rounded-full border-2 border-uleam-red object-cover">
+                    <div>
+                        <h4 id="profile-edit-name-display" class="font-bold text-base text-gray-800">Usuario</h4>
+                        <span id="profile-edit-role-badge" class="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded font-semibold uppercase">Estudiante</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Nombre Completo</label>
+                        <input type="text" id="prof-name" required class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Correo institucional</label>
+                        <input type="email" id="prof-email" required class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Teléfono</label>
+                        <input type="text" id="prof-phone" class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Cédula</label>
+                        <input type="text" id="prof-dni" class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">País de residencia</label>
+                        <input type="text" id="prof-country" class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Nacionalidad</label>
+                        <input type="text" id="prof-nationality" class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Dirección</label>
+                        <input type="text" id="prof-address" class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Correo personal</label>
+                        <input type="email" id="prof-personal-email" class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Fecha de nacimiento</label>
+                        <input type="date" id="prof-dob" class="w-full px-3 py-1.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Género</label>
+                        <select id="prof-gender" class="w-full px-3 py-1.5 border rounded bg-white">
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeProfileModal()" class="px-4 py-2 border text-gray-600 rounded text-xs font-bold">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-uleam-red hover:bg-uleam-redHover text-white rounded text-xs font-bold shadow">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Logout Confirmation ("¿Continuar? Se cerrará tu sesión...") -->
+    <div id="modal-logout" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 border">
+            <div class="w-12 h-12 bg-red-100 text-uleam-red rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">¿Continuar?</h3>
+            <p class="text-sm text-gray-600">Se cerrará tu sesión en la plataforma.</p>
+            <div class="flex justify-center gap-3 pt-2">
+                <button onclick="closeLogoutModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold rounded-lg transition">Cancelar</button>
+                <button onclick="executeLogout()" class="px-4 py-2 bg-uleam-red hover:bg-uleam-redHover text-white text-xs font-bold rounded-lg transition shadow">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Course Details & Enrollment (Student Catalog) -->
+    <div id="modal-course-enroll" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-200 space-y-4 p-6">
+            <div class="flex justify-between items-start border-b pb-3">
+                <h3 id="enroll-modal-title" class="text-xl font-bold text-uleam-red">Nombre del Curso</h3>
+                <button onclick="closeEnrollModal()" class="text-gray-400 hover:text-gray-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <img id="enroll-modal-img" src="" class="w-full h-40 object-cover rounded-lg border">
+            <div class="space-y-2 text-sm text-gray-600">
+                <p><strong>Descripción:</strong> <span id="enroll-modal-desc">...</span></p>
+                <p><strong>Categoría:</strong> <span id="enroll-modal-cat">...</span></p>
+                <p><strong>Número de módulos:</strong> <span id="enroll-modal-modules">0</span></p>
+                <p><strong>Docente:</strong> <span id="enroll-modal-instructor">...</span></p>
+            </div>
+            <div class="pt-4 border-t flex justify-end gap-2">
+                <button onclick="closeEnrollModal()" class="px-4 py-2 border rounded-lg text-xs font-bold text-gray-600">Cancelar</button>
+                <button id="btn-confirm-enrollment" onclick="confirmEnrollment()" class="px-5 py-2 bg-uleam-red hover:bg-uleam-redHover text-white rounded-lg text-xs font-bold shadow">Inscribirme</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Quiz / Evaluation Runner -->
+    <div id="modal-quiz" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 space-y-6 border border-gray-200">
+            <!-- Quiz Intro Screen -->
+            <div id="quiz-screen-intro" class="space-y-4 text-center">
+                <h3 id="quiz-intro-title" class="text-xl font-bold text-uleam-red">Evaluación 1</h3>
+                <div class="bg-gray-50 p-4 rounded-lg border text-sm text-left space-y-2">
+                    <p><strong>Preguntas:</strong> <span id="quiz-intro-count">10</span></p>
+                    <p><strong>Tiempo límite:</strong> <span id="quiz-intro-time">15 minutos</span></p>
+                    <p><strong>Mejor calificación:</strong> <span id="quiz-intro-score">0/10</span></p>
+                </div>
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeQuizModal()" class="px-4 py-2 border rounded-lg text-xs font-bold">Cancelar</button>
+                    <button onclick="startQuizTimerAndQuestions()" class="px-6 py-2 bg-uleam-red hover:bg-uleam-redHover text-white text-xs font-bold rounded-lg shadow">Comenzar intento</button>
+                </div>
+            </div>
+
+            <!-- Quiz Questions Screen -->
+            <div id="quiz-screen-questions" class="space-y-4 hidden">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <span id="quiz-question-counter" class="text-xs font-bold text-gray-500">Pregunta 1 de 10</span>
+                    <span class="text-xs font-bold text-uleam-red bg-red-50 px-2.5 py-1 rounded-full border border-red-200">
+                        <i class="fa-regular fa-clock mr-1"></i> <span id="quiz-timer-display">15:00</span>
+                    </span>
+                </div>
+
+                <div id="quiz-question-box" class="space-y-3">
+                    <h4 id="quiz-question-text" class="font-bold text-base text-gray-800">¿Para qué sirve '=='?</h4>
+                    <div id="quiz-options-list" class="space-y-2">
+                        <!-- Radio options rendered here -->
+                    </div>
+                </div>
+
+                <div class="flex justify-between pt-4 border-t">
+                    <button id="btn-quiz-prev" onclick="navigateQuizQuestion(-1)" class="px-4 py-2 bg-gray-200 text-gray-700 text-xs font-bold rounded-lg disabled:opacity-50">Anterior</button>
+                    <button id="btn-quiz-next" onclick="navigateQuizQuestion(1)" class="px-4 py-2 bg-uleam-red text-white text-xs font-bold rounded-lg">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Quiz Result Screen -->
+            <div id="quiz-screen-results" class="text-center space-y-4 hidden">
+                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">Evaluación Terminada</h3>
+                <div class="bg-gray-50 p-4 rounded-lg border text-sm space-y-1">
+                    <p class="text-gray-600">Calificación obtenida:</p>
+                    <p id="quiz-final-score" class="text-3xl font-extrabold text-uleam-red">8/10</p>
+                    <p id="quiz-final-status" class="text-xs font-bold text-uleam-green uppercase tracking-wider pt-2">Aprobado</p>
+                </div>
+                <button onclick="finishQuiz()" class="px-6 py-2 bg-uleam-red hover:bg-uleam-redHover text-white text-xs font-bold rounded-lg shadow">Aceptar y Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: View Course Participants (Instructor / Admin) -->
+    <div id="modal-participants" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-gray-200">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-lg text-gray-800">Participantes Inscritos</h3>
+                <button onclick="closeParticipantsModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="participants-list-container" class="space-y-2 max-h-80 overflow-y-auto divide-y">
+                <!-- Participants list rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Content Item (Lesson, Resource, Quiz) in Editor -->
+    <div id="modal-add-content" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-gray-200">
+            <h3 class="font-bold text-base text-gray-800 border-b pb-2">Elija un elemento para agregar</h3>
+            <div class="grid grid-cols-1 gap-3">
+                <button onclick="selectNewItemType('leccion')" class="p-3 border rounded-lg hover:bg-gray-50 flex items-center space-x-3 text-left">
+                    <div class="w-10 h-10 bg-red-100 text-uleam-red rounded-full flex items-center justify-center"><i class="fa-solid fa-video"></i></div>
+                    <div>
+                        <p class="font-bold text-sm text-gray-800">Lección (Video / Clase)</p>
+                        <p class="text-xs text-gray-500">Video explicativo de la clase</p>
+                    </div>
+                </button>
+                <button onclick="selectNewItemType('recurso')" class="p-3 border rounded-lg hover:bg-gray-50 flex items-center space-x-3 text-left">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-file-arrow-down"></i></div>
+                    <div>
+                        <p class="font-bold text-sm text-gray-800">Recurso (Archivo / Archivo adjunto)</p>
+                        <p class="text-xs text-gray-500">PDF, Código o documento descargable</p>
+                    </div>
+                </button>
+                <button onclick="selectNewItemType('evaluacion')" class="p-3 border rounded-lg hover:bg-gray-50 flex items-center space-x-3 text-left">
+                    <div class="w-10 h-10 bg-green-100 text-uleam-green rounded-full flex items-center justify-center"><i class="fa-solid fa-list-check"></i></div>
+                    <div>
+                        <p class="font-bold text-sm text-gray-800">Evaluación (Cuestionario)</p>
+                        <p class="text-xs text-gray-500">Prueba de conocimientos con preguntas</p>
+                    </div>
+                </button>
+            </div>
+            <button onclick="closeAddContentModal()" class="w-full py-2 border rounded-lg text-xs font-bold text-gray-600">Cancelar</button>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+    
+
+    <script src="js/state.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/student.js"></script>
+    <script src="js/classroom.js"></script>
+    <script src="js/instructor.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/course-editor.js"></script>
+    <script src="js/profile-notifications.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
