@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Estudiantes</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="contenedor">
+        <header>
+            <h1>Registro de Estudiantes</h1>
+            <p>Sistema de gestión y almacenamiento local de datos estudiantiles</p>
+        </header>
+
+        <main>
+            <section class="seccion-formulario">
+                <h2>Formulario de Registro</h2>
+                <form id="formulario-estudiante" novalidate>
+                    <input type="hidden" id="id-estudiante">
+
+                    <div class="grupo-formulario">
+                        <label for="cedula">Cédula (10 dígitos):</label>
+                        <input type="text" id="cedula" name="cedula" placeholder="Ej. 1312345678" required>
+                        <span class="mensaje-error" id="error-cedula"></span>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="apellidos">Apellidos:</label>
+                        <input type="text" id="apellidos" name="apellidos" placeholder="Ej. Delgado Palma" required>
+                        <span class="mensaje-error" id="error-apellidos"></span>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="nombres">Nombres:</label>
+                        <input type="text" id="nombres" name="nombres" placeholder="Ej. Luis Angel" required>
+                        <span class="mensaje-error" id="error-nombres"></span>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="direccion">Dirección:</label>
+                        <input type="text" id="direccion" name="direccion" placeholder="Ej. Av. 220 y Calle 310" required>
+                        <span class="mensaje-error" id="error-direccion"></span>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="telefono">Teléfono (10 dígitos):</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="Ej. 0991234567" required>
+                        <span class="mensaje-error" id="error-telefono"></span>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="correo">Correo Electrónico:</label>
+                        <input type="email" id="correo" name="correo" placeholder="Ej. estudiante@correo.com" required>
+                        <span class="mensaje-error" id="error-correo"></span>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="facultad">Facultad:</label>
+                        <select id="facultad" name="facultad" required>
+                            <option value="">Seleccione una facultad...</option>
+                            <option value="Ciencias Informáticas">Ciencias Informáticas</option>
+                            <option value="Ciencias Administrativas">Ciencias Administrativas</option>
+                            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+                            <option value="Educación">Educación</option>
+                            <option value="Salud">Salud</option>
+                        </select>
+                        <span class="mensaje-error" id="error-facultad"></span>
+                    </div>
+
+                    <div class="grupo-formulario grid-2-col">
+                        <div>
+                            <label for="nivel">Nivel / Semestre:</label>
+                            <input type="number" id="nivel" name="nivel" min="1" max="10" placeholder="Ej. 4" required>
+                            <span class="mensaje-error" id="error-nivel"></span>
+                        </div>
+                        <div>
+                            <label for="paralelo">Paralelo:</label>
+                            <input type="text" id="paralelo" name="paralelo" placeholder="Ej. A" maxlength="2" required>
+                            <span class="mensaje-error" id="error-paralelo"></span>
+                        </div>
+                    </div>
+
+                    <div class="acciones-formulario">
+                        <button type="submit" id="btn-guardar" class="btn btn-primario">Guardar Estudiante</button>
+                        <button type="button" id="btn-cancelar" class="btn btn-secundario oculto">Cancelar Edición</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="seccion-tabla">
+                <h2>Estudiantes Registrados</h2>
+                <div class="tabla-responsiva">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Nombres Completo</th>
+                                <th>Contacto</th>
+                                <th>Facultad / Nivel</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="aplicacion.js"></script>
+</body>
+</html>
